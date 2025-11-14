@@ -64,10 +64,7 @@ if st.button("페이지 정보 초기화"):
     st.session_state.current_hint = ""
     st.success("모든 진행 정보가 초기화되었습니다.")
 
-st.subheader(f"현재 가격: {st.session_state.price:,} 원")
-st.write(f"가격 변화 횟수: {st.session_state.step} / {TOTAL_STEPS} 회")
-st.write(f"소지금: {st.session_state.money:,} 원")
-st.write(f"보유 상품 개수: {st.session_state.count} 개")
+
 
 st.write("---")
 
@@ -127,11 +124,10 @@ if st.session_state.current_hint:
 # 현재 상태 요약
 # -------------------
 st.write("---")
-st.subheader("현재 상태 요약")
-
-st.write(f"현재 가격: {st.session_state.price:,} 원")
-st.write(f"보유 상품 개수: {st.session_state.count} 개")
+st.subheader(f"현재 가격: {st.session_state.price:,} 원")
+st.write(f"가격 변화 횟수: {st.session_state.step} / {TOTAL_STEPS} 회")
 st.write(f"소지금: {st.session_state.money:,} 원")
+st.write(f"보유 상품 개수: {st.session_state.count} 개")
 
 total_asset = st.session_state.money + (st.session_state.count * st.session_state.price)
 st.write(f"총 자산 가치: {total_asset:,} 원")
@@ -141,4 +137,5 @@ st.write(f"총 자산 가치: {total_asset:,} 원")
 # -------------------
 st.write("가격 변동 그래프")
 st.line_chart(st.session_state.price_history)
+
 
