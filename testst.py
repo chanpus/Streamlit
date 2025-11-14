@@ -5,10 +5,9 @@ st.set_page_config(page_title="투자형 이벤트 프로토타입", layout="cen
 # -------------------
 # 설정값
 # -------------------
-TOTAL_STEPS = 30  # 총 가격 변화 횟수 (변경하려면 PRICE_LIST 길이도 같이 맞춰야 함)
+TOTAL_STEPS = 30  # 총 가격 변화 횟수
 
 # 초기가격 + 30회 변화 후 가격 = 총 31개
-# 여기 숫자들을 네가 원하는 시나리오로 바꿔서 쓰면 됨
 PRICE_LIST = [
     1000, 1020, 1010, 1030, 990,
     995, 1005, 1015, 1025, 1035,
@@ -29,7 +28,7 @@ HINT_LIST = [
     "힌트 6: 마지막 구간입니다. 지금까지의 평균 가격을 떠올려 보세요.",
 ]
 
-# PRICE_LIST 길이 체크 (버그 방지용)
+# PRICE_LIST 길이 체크
 if len(PRICE_LIST) != TOTAL_STEPS + 1:
     st.error("PRICE_LIST 길이가 TOTAL_STEPS + 1 과 다릅니다. 설정을 확인하세요.")
     st.stop()
@@ -38,7 +37,7 @@ if len(PRICE_LIST) != TOTAL_STEPS + 1:
 # 세션 상태 초기화
 # -------------------
 if "step" not in st.session_state:
-    st.session_state.step = 0          # 0 ~ TOTAL_STEPS
+    st.session_state.step = 0
 if "price" not in st.session_state:
     st.session_state.price = PRICE_LIST[0]
 if "money" not in st.session_state:
@@ -51,11 +50,26 @@ if "current_hint" not in st.session_state:
     st.session_state.current_hint = ""
 
 # -------------------
-# 상단 정보
+# 상단 제목 / 초기화 버튼
 # -------------------
 st.title("투자형 이벤트 시스템 프로토타입")
 
+# 초기화 버튼
+if st.button("페이지 정보 초기화"):
+    st.session_state.step = 0
+    st.session_state.price = PRICE_LIST[0]
+    st.session_state.money = 10000
+    st.session_state.count = 0
+    st.session_state.price_history = [PRICE_LIST[0]]
+    st.session_state.current_hint = ""
+    st.success("모든 진행 정보가 초기화되었습니다.")
 
+st.subheader(f"현재 가격: {st.session_state.price:,} 원")
+st.write(f"가격 변화 횟수: {st.session_state.step} / {TOTAL_STEPS} 회")
+st.write(f"소지금: {st.session_state.money:,} 원")
+st.write(f"보유 상품 개수: {st.session_state.count} 개")
+
+st.write("---")
 
 # -------------------
 # 버튼 영역 (레이아웃 고정)
@@ -65,7 +79,6 @@ col1, col2, col3, col4 = st.columns(4)
 # 1) 다음 (가격 변동)
 with col1:
     if st.button("다음", key="btn_next"):
-        # 계산기처럼 여기에서 바로 상태 업데이트
         if st.session_state.step < TOTAL_STEPS:
             st.session_state.step += 1
             st.session_state.price = PRICE_LIST[st.session_state.step]
@@ -89,10 +102,9 @@ with col3:
         else:
             st.warning("보유 상품이 없습니다. 판매 불가!")
 
-# 4) 힌트 보기 (항상 버튼은 존재)
+# 4) 힌트 보기 (항상 존재)
 with col4:
     if st.button("힌트 보기", key="btn_hint"):
-        # 현재 step이 5,10,15,20,25,30 중 하나일 때만 힌트 있음
         if 0 < st.session_state.step <= TOTAL_STEPS and st.session_state.step % 5 == 0:
             hint_index = (st.session_state.step // 5) - 1  # 5→0, 10→1 ...
             if 0 <= hint_index < len(HINT_LIST):
@@ -111,19 +123,22 @@ if st.session_state.current_hint:
     st.info(st.session_state.current_hint)
 
 
-
-
-st.subheader(f"현재 가격: {st.session_state.price:,} 원")
-st.write(f"가격 변화 횟수: {st.session_state.step} / {TOTAL_STEPS} 회")
-st.write(f"소지금: {st.session_state.money:,} 원")
-st.write(f"보유 상품 개수: {st.session_state.count} 개")
-
+# -------------------
+# 현재 상태 요약
+# -------------------
 st.write("---")
+st.subheader("현재 상태 요약")
 
+st.write(f"현재 가격: {st.session_state.price:,} 원")
+st.write(f"보유 상품 개수: {st.session_state.count} 개")
+st.write(f"소지금: {st.session_state.money:,} 원")
 
+total_asset = st.session_state.money + (st.session_state.count * st.session_state.price)
+st.write(f"총 자산 가치: {total_asset:,} 원")
 
 # -------------------
 # 가격 변동 그래프
 # -------------------
 st.write("가격 변동 그래프")
 st.line_chart(st.session_state.price_history)
+
