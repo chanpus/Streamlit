@@ -69,7 +69,10 @@ if "current_hint" not in st.session_state:
 if "trades" not in st.session_state:
     st.session_state.trades = []
 
-
+# 현재 가격 계산
+current_prices = {
+    item: PRICE_LISTS[item][st.session_state.step] for item in ITEMS
+}
 
 st.title("투자형 이벤트 시스템 프로토타입 (상품 3종, 독립 가격)")
 
@@ -262,4 +265,5 @@ if len(st.session_state.trades) == 0:
     st.write("거래 내역 없음")
 else:
     st.dataframe(pd.DataFrame(st.session_state.trades), use_container_width=True)
+
 
