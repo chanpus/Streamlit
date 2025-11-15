@@ -196,12 +196,7 @@ st.write("---")
 
 
 
-# -------------------
-# 가격 그래프 (3종 각각 독립)
-# -------------------
-st.write("가격 변동 그래프")
-chart_df = pd.DataFrame(st.session_state.price_histories)
-st.line_chart(chart_df)
+
 
 # -------------------
 # 보유 상품 상세
@@ -255,6 +250,14 @@ st.write(f"소지금: {st.session_state.money:,} 원")
 st.write(f"보유 상품 평가액: {int(total_hold_value):,} 원")
 st.write(f"총 자산: {int(total_asset):,} 원")
 
+
+# -------------------
+# 가격 그래프 (3종 각각 독립)
+# -------------------
+st.write("가격 변동 그래프")
+chart_df = pd.DataFrame(st.session_state.price_histories)
+st.line_chart(chart_df)
+
 # -------------------
 # 거래 기록
 # -------------------
@@ -265,5 +268,6 @@ if len(st.session_state.trades) == 0:
     st.write("거래 내역 없음")
 else:
     st.dataframe(pd.DataFrame(st.session_state.trades), use_container_width=True)
+
 
 
